@@ -1,0 +1,9 @@
+Flask
+easyocr
+Pillow
+numpy
+mysql-connector-python  # or pymysql, depending on your choice
+flask-cors
+gunicorn  # optional for deployment
+
+

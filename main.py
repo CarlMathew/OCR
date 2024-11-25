@@ -1,7 +1,9 @@
 # import easyocr
 # import random
-# from APPSql import SQLHandler
-# reader = easyocr.Reader(['en'])
+from APPSql import SQLHandler
+
+
+# reader = easyocr.Reader(['en'], gpu = True)
 # result = reader.readtext("Photo/drivers2.jpg")
 # type = [text.title() for (bbox, text, prob) in result]
 #
@@ -108,19 +110,20 @@
 #             print(f"Error:{err}")
 #         finally:
 #             connection.connection.close()
+#
+#
 
 
+def lastRFIDNum():
+    connection = SQLHandler("FEU")
+    query = "SELECT * FROM rfid_info WHERE Status = 0 ORDER BY ID LIMIT 1"
+    results = connection.execute_query(query)
+    rfid_num = results[0][1]
+    update_query = f"UPDATE rfid_info SET Status = 1 WHERE RFID_NUM = '{rfid_num}'"
+    connection.UD_query(update_query)
+    return rfid_num
 
-import requests
 
-api_key = 'K87010546188957'
-image_path = 'Photo/drivers2.jpg'
-with open(image_path, 'rb') as image_file:
-    response = requests.post(
-        'https://api.ocr.space/parse/image',
-        files={'file': image_file},
-        data={'apikey': api_key}
-    )
-    result = response.json()
-    text = result.get('ParsedResults', [{}])[0].get('ParsedText', '')
-    print(text)
+rfidNum = lastRFIDNum()
+
+print(rfidNum)
